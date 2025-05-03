@@ -7,8 +7,8 @@ public class Timer : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _counterText;
 
     private Coroutine _counter;
-    private int _count; 
-    float delay = 0.5f;
+    private int _count;
+    private float delay = 0.5f;
 
     private void Update()
     {
@@ -16,7 +16,7 @@ public class Timer : MonoBehaviour
         {
             if (_counter == null)
             {
-                _counter = StartCoroutine(Counter(delay));
+                _counter = StartCoroutine(StartCounter(delay));
             }
             else
             {
@@ -24,16 +24,24 @@ public class Timer : MonoBehaviour
                 _counter = null;
             }
         }
+
+        ShowCounter();
     }
 
-    private IEnumerator Counter(float delay)
+    private IEnumerator StartCounter(float delay)
     {
-        while (true)
+        WaitForSeconds _waitForSeconds = new WaitForSeconds(delay);
+
+        while (enabled)
         {
-            yield return new WaitForSeconds(delay);
+            yield return _waitForSeconds;
             _count++;
-            _counterText.text = _count.ToString();
         }
+    }
+
+    private void ShowCounter()
+    {
+        _counterText.text = _count.ToString();
     }
 }
 
