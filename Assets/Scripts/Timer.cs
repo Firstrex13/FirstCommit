@@ -9,7 +9,7 @@ public class Timer : MonoBehaviour
 
     private Coroutine _counter;
     private int _count;
-    private float delay = 0.5f;
+    private float _delay = 0.5f;
 
     private void Update()
     {
