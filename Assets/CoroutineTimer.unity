@@ -217,6 +217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c69b6ffecf5aefd48909476fc8a09854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _timer: {fileID: 575567903}
 --- !u!114 &575567903
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -229,7 +230,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b109c1f5cf4ee6440b6d336dbded939d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _showTimer: {fileID: 575567902}
   _counterText: {fileID: 1682932107}
 --- !u!4 &575567904
 Transform:

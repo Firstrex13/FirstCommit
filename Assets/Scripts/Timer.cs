@@ -1,41 +1,45 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
-    [SerializeField] private ShowTimer _showTimer;
     [SerializeField] private TextMeshProUGUI _counterText;
 
     private Coroutine _counter;
     private int _count;
     private float _delay = 0.5f;
+    private int _turnSwitchButtonCode = 0;
+
+    public event Action<TextMeshProUGUI, int> OnCountChanged;
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(_turnSwitchButtonCode))
         {
             if (_counter == null)
             {
-                _counter = StartCoroutine(StartCounter(delay));
+                _counter = StartCoroutine(StartCounter(_delay));
             }
             else
             {
                 StopCoroutine(_counter);
+
                 _counter = null;
             }
         }
 
-        _showTimer.ShowCounter(_counterText, _count);
+        OnCountChanged?.Invoke(_counterText, _count);
     }
 
     private IEnumerator StartCounter(float delay)
     {
-        WaitForSeconds _waitForSeconds = new WaitForSeconds(delay);
+        WaitForSeconds waitForSeconds = new WaitForSeconds(delay);
 
         while (enabled)
         {
-            yield return _waitForSeconds;
+            yield return waitForSeconds;
             _count++;
         }
     }
