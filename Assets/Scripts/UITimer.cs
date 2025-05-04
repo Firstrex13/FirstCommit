@@ -1,20 +1,21 @@
 using TMPro;
 using UnityEngine;
 
-public class TimerShower : MonoBehaviour
+public class UITimer : MonoBehaviour
 {
     [SerializeField] private Timer _timer;
 
     private void OnEnable()
     {
-        _timer.OnCountChanged += ShowCounter;
+        _timer.CountChanged += OnShowCounter;
     }
 
     private void OnDisable()
     {
-        _timer.OnCountChanged -= ShowCounter;
+        _timer.CountChanged -= OnShowCounter;
     }
-    private void ShowCounter(TextMeshProUGUI text, int count)
+
+    private void OnShowCounter(TextMeshProUGUI text, int count)
     {
         text.text = count.ToString();
     }

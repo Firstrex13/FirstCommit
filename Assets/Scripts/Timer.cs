@@ -12,7 +12,7 @@ public class Timer : MonoBehaviour
     private float _delay = 0.5f;
     private int _turnSwitchButtonCode = 0;
 
-    public event Action<TextMeshProUGUI, int> OnCountChanged;
+    public event Action<TextMeshProUGUI, int> CountChanged;
 
     private void Update()
     {
@@ -30,7 +30,6 @@ public class Timer : MonoBehaviour
             }
         }
 
-        OnCountChanged?.Invoke(_counterText, _count);
     }
 
     private IEnumerator StartCounter(float delay)
@@ -41,6 +40,7 @@ public class Timer : MonoBehaviour
         {
             yield return waitForSeconds;
             _count++;
+            CountChanged?.Invoke(_counterText, _count);
         }
     }
 }
