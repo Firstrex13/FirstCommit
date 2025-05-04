@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
+    [SerializeField] private ShowTimer _showTimer;
     [SerializeField] private TextMeshProUGUI _counterText;
 
     private Coroutine _counter;
@@ -25,7 +26,7 @@ public class Timer : MonoBehaviour
             }
         }
 
-        ShowCounter();
+        _showTimer.ShowCounter(_counterText, _count);
     }
 
     private IEnumerator StartCounter(float delay)
@@ -37,11 +38,6 @@ public class Timer : MonoBehaviour
             yield return _waitForSeconds;
             _count++;
         }
-    }
-
-    private void ShowCounter()
-    {
-        _counterText.text = _count.ToString();
     }
 }
 
