@@ -7,6 +7,7 @@ public class Spawner : MonoBehaviour
     private float _spawnRadius = 3f;
     private int _minCubesCount = 2;
     private int _maxCubesCount = 6;
+    private int _numberToDecreaseScale = 2;
 
     private void OnEnable()
     {
@@ -18,7 +19,7 @@ public class Spawner : MonoBehaviour
         _calculatorOfDivision.PerfomDivision -= OnCreateCubes;
     }
 
-    public void OnCreateCubes()
+    private void OnCreateCubes()
     {
         Vector3 position = transform.position;
 
@@ -30,12 +31,19 @@ public class Spawner : MonoBehaviour
 
             newCube.transform.position = position + Random.insideUnitSphere * _spawnRadius;
 
-            newCube.transform.localScale = Vector3.one / 2;
+            newCube.transform.localScale = Vector3.one / _numberToDecreaseScale;
 
             newCube.GetComponent<Renderer>().material.color = Random.ColorHSV();
 
             newCube.AddComponent<Cube>();
             newCube.AddComponent<Rigidbody>();
+
+            GetScale(newCube);
         }
+    }
+
+    public float GetScale(GameObject newCube)
+    {
+        return newCube.transform.localScale.x;
     }
 }

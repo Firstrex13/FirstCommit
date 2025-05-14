@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Explosion : MonoBehaviour
+public class Exploser : MonoBehaviour
 {
+    [SerializeField] private Spawner _spawner;
     [SerializeField] private RayCaster _rayCaster;
     [SerializeField] private float _explosionRadius = 5;
     [SerializeField] private float _explosionForce = 700;
@@ -19,6 +20,9 @@ public class Explosion : MonoBehaviour
 
     private void OnExplode(Cube _cube)
     {
+        _explosionForce /= _spawner.GetScale(_cube.gameObject);
+        _explosionRadius /= _spawner.GetScale(_cube.gameObject);
+
         foreach (Rigidbody cubes in GetExplodableObjects())
         {
             cubes.AddExplosionForce(_explosionForce, _cube.transform.position, _explosionRadius);

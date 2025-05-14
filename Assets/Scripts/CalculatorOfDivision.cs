@@ -5,12 +5,12 @@ public class CalculatorOfDivision : MonoBehaviour
 {
     [SerializeField] private RayCaster _rayCaster;
     [SerializeField] private Spawner _spawner;
-    [SerializeField] private Explosion _explosion;
+    [SerializeField] private Exploser _explosion;
 
-    private float _splitChance = 1f;
+    private int _numberToDecreaseChance = 2;
+    private float _currentChance;
 
     public event Action PerfomDivision;
-
 
     private void OnEnable()
     {
@@ -22,19 +22,21 @@ public class CalculatorOfDivision : MonoBehaviour
         _rayCaster.StartDivision -= OnCalculateDivision;
     }
 
-    private void OnCalculateDivision(Cube _cube)
+    private void OnCalculateDivision(Cube cube)
     {
-        if (UnityEngine.Random.value < _splitChance)
+        if (UnityEngine.Random.value < cube.GetChance())
         {
-            _splitChance /= 2;
+            _currentChance = cube.GetChance();
+            _currentChance /= _numberToDecreaseChance;
 
             PerfomDivision?.Invoke();
 
-            _cube.Destroy();
+            cube.Destroy();
         }
         else
         {
-            _cube.Destroy();
+            PerfomDivision?.Invoke();
+            cube.Destroy();
         }
     }
 }
