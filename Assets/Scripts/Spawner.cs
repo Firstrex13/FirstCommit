@@ -3,6 +3,8 @@ using UnityEngine;
 public class Spawner : MonoBehaviour
 {
     [SerializeField] private CalculatorOfDivision _calculatorOfDivision;
+    [SerializeField] private GameObject _cubePrefab;
+    [SerializeField] private Cube _cube;
 
     private float _spawnRadius = 3f;
     private int _minCubesCount = 2;
@@ -11,12 +13,12 @@ public class Spawner : MonoBehaviour
 
     private void OnEnable()
     {
-        _calculatorOfDivision.PerfomDivision += OnCreateCubes;
+        _calculatorOfDivision.PerfomedDivision += OnCreateCubes;
     }
 
     private void OnDisable()
     {
-        _calculatorOfDivision.PerfomDivision -= OnCreateCubes;
+        _calculatorOfDivision.PerfomedDivision -= OnCreateCubes;
     }
 
     private void OnCreateCubes()
@@ -27,23 +29,18 @@ public class Spawner : MonoBehaviour
 
         for (int i = 0; i < currentCubCount; i++)
         {
-            GameObject newCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            GameObject newCube = Instantiate(_cubePrefab, transform.position, Quaternion.identity);
 
             newCube.transform.position = position + Random.insideUnitSphere * _spawnRadius;
 
-            newCube.transform.localScale = Vector3.one / _numberToDecreaseScale;
+            newCube.transform.localScale = transform.localScale / _numberToDecreaseScale;
 
-            newCube.GetComponent<Renderer>().material.color = Random.ColorHSV();
+            if (_cube != null)
+            {
+                _cube.GetComponent<Cube>();
 
-            newCube.AddComponent<Cube>();
-            newCube.AddComponent<Rigidbody>();
-
-            GetScale(newCube);
+                _cube.Initialise(newCube.transform);
+            }
         }
-    }
-
-    public float GetScale(GameObject newCube)
-    {
-        return newCube.transform.localScale.x;
     }
 }

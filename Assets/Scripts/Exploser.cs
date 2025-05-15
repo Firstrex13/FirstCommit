@@ -3,25 +3,25 @@ using UnityEngine;
 
 public class Exploser : MonoBehaviour
 {
-    [SerializeField] private Spawner _spawner;
+    [SerializeField] private Cube _cube;
     [SerializeField] private RayCaster _rayCaster;
     [SerializeField] private float _explosionRadius = 5;
     [SerializeField] private float _explosionForce = 700;
 
     private void OnEnable()
     {
-        _rayCaster.StartDivision += OnExplode;
+        _rayCaster.StartedDivision += OnExplode;
     }
 
     private void OnDisable()
     {
-        _rayCaster.StartDivision -= OnExplode;
+        _rayCaster.StartedDivision -= OnExplode;
     }
 
-    private void OnExplode(Cube _cube)
+    public void OnExplode(Cube _cube)
     {
-        _explosionForce /= _spawner.GetScale(_cube.gameObject);
-        _explosionRadius /= _spawner.GetScale(_cube.gameObject);
+        _explosionForce /= _cube.GetScale(_cube.gameObject);
+        _explosionRadius /= _cube.GetScale(_cube.gameObject);
 
         foreach (Rigidbody cubes in GetExplodableObjects())
         {

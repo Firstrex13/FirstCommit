@@ -6,7 +6,7 @@ public class RayCaster : MonoBehaviour
     [SerializeField] private Camera _camera;
     [SerializeField] private Cube _cube;
 
-    public event Action<Cube> StartDivision;
+    public event Action<Cube> StartedDivision;
 
     private void Update()
     {
@@ -16,15 +16,19 @@ public class RayCaster : MonoBehaviour
 
             RaycastHit hit;
 
-            Physics.Raycast(ray, out hit);
-
-            if (hit.collider.GetComponent<Cube>())
+            if (Input.GetMouseButtonDown(0))
             {
-                _cube = hit.collider.GetComponent<Cube>();
-
-                if (Input.GetMouseButton(0))
+                if (Physics.Raycast(ray, out hit) != false)
                 {
-                    StartDivision?.Invoke(_cube);
+                    if (hit.collider.TryGetComponent<Cube>(out _cube))
+                    {
+                        _cube = hit.collider.GetComponent<Cube>();
+
+                        if (Input.GetMouseButton(0))
+                        {
+                            StartedDivision?.Invoke(_cube);
+                        }
+                    }
                 }
             }
         }

@@ -10,16 +10,16 @@ public class CalculatorOfDivision : MonoBehaviour
     private int _numberToDecreaseChance = 2;
     private float _currentChance;
 
-    public event Action PerfomDivision;
+    public event Action PerfomedDivision;
 
     private void OnEnable()
     {
-        _rayCaster.StartDivision += OnCalculateDivision;
+        _rayCaster.StartedDivision += OnCalculateDivision;
     }
 
     private void OnDisable()
     {
-        _rayCaster.StartDivision -= OnCalculateDivision;
+        _rayCaster.StartedDivision -= OnCalculateDivision;
     }
 
     private void OnCalculateDivision(Cube cube)
@@ -29,14 +29,14 @@ public class CalculatorOfDivision : MonoBehaviour
             _currentChance = cube.GetChance();
             _currentChance /= _numberToDecreaseChance;
 
-            PerfomDivision?.Invoke();
-
-            cube.Destroy();
+            PerfomedDivision?.Invoke();
+            _explosion.OnExplode(cube);
         }
         else
         {
-            PerfomDivision?.Invoke();
-            cube.Destroy();
+            PerfomedDivision?.Invoke();
         }
+        if (cube != null)
+            cube.Destroy();
     }
 }
