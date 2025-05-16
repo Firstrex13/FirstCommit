@@ -1,42 +1,42 @@
 using System;
 using UnityEngine;
 
-public class CalculatorOfDivision : MonoBehaviour
+public class HandlerOfActions : MonoBehaviour
 {
     [SerializeField] private RayCaster _rayCaster;
     [SerializeField] private Spawner _spawner;
     [SerializeField] private Exploser _explosion;
+    [SerializeField] private float _currentChance;
 
     private int _numberToDecreaseChance = 2;
-    private float _currentChance;
-
-    public event Action PerfomedDivision;
+    private bool _isAllowed;
 
     private void OnEnable()
     {
-        _rayCaster.StartedDivision += OnCalculateDivision;
+        _rayCaster.StartedDivision += CalculateProbabilityOfDivision;
     }
 
     private void OnDisable()
     {
-        _rayCaster.StartedDivision -= OnCalculateDivision;
+        _rayCaster.StartedDivision += CalculateProbabilityOfDivision;
     }
 
-    private void OnCalculateDivision(Cube cube)
+    private void CalculateProbabilityOfDivision(Cube cube)
     {
         if (UnityEngine.Random.value < cube.GetChance())
         {
             _currentChance = cube.GetChance();
             _currentChance /= _numberToDecreaseChance;
+            _numberToDecreaseChance *= 2;
+            cube.AddExplosionForce();
+            _spawner.CreateCubes(cube);
 
-            PerfomedDivision?.Invoke();
-            _explosion.OnExplode(cube);
         }
         else
         {
-            PerfomedDivision?.Invoke();
+            _explosion.OnExplode(cube);
         }
-        if (cube != null)
-            cube.Destroy();
+
+        cube.Destroy();
     }
 }

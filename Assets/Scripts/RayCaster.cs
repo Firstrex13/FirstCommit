@@ -24,10 +24,7 @@ public class RayCaster : MonoBehaviour
                     {
                         _cube = hit.collider.GetComponent<Cube>();
 
-                        if (Input.GetMouseButton(0))
-                        {
-                            StartedDivision?.Invoke(_cube);
-                        }
+                        StartedDivision?.Invoke(_cube);
                     }
                 }
             }

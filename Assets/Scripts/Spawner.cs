@@ -1,8 +1,9 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private CalculatorOfDivision _calculatorOfDivision;
+    [SerializeField] private HandlerOfActions _handlerOfActions;
     [SerializeField] private GameObject _cubePrefab;
     [SerializeField] private Cube _cube;
 
@@ -11,19 +12,8 @@ public class Spawner : MonoBehaviour
     private int _maxCubesCount = 6;
     private int _numberToDecreaseScale = 2;
 
-    private void OnEnable()
+    public void CreateCubes(Cube cube)
     {
-        _calculatorOfDivision.PerfomedDivision += OnCreateCubes;
-    }
-
-    private void OnDisable()
-    {
-        _calculatorOfDivision.PerfomedDivision -= OnCreateCubes;
-    }
-
-    private void OnCreateCubes()
-    {
-        Vector3 position = transform.position;
 
         int currentCubCount = Random.Range(_minCubesCount, _maxCubesCount + 1);
 
@@ -31,9 +21,13 @@ public class Spawner : MonoBehaviour
         {
             GameObject newCube = Instantiate(_cubePrefab, transform.position, Quaternion.identity);
 
+            Vector3 position = cube.transform.position;
+
+            Vector3 currentScale = cube.transform.localScale;
+
             newCube.transform.position = position + Random.insideUnitSphere * _spawnRadius;
 
-            newCube.transform.localScale = transform.localScale / _numberToDecreaseScale;
+            newCube.transform.localScale = currentScale / _numberToDecreaseScale;
 
             if (_cube != null)
             {

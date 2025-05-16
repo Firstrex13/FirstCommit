@@ -1,12 +1,13 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Cube : MonoBehaviour
 {
-    [SerializeField] private float _explosionRadius = 5;
-    [SerializeField] private float _explosionForce = 500;
+    [SerializeField] private float _explosionRadius = 10f;
+    [SerializeField] private float _explosionForce = 100f;
+    [SerializeField] private float _splitChance = 1f;
 
     private Rigidbody _rigidBody;
-    private float _splitChance = 1f;
 
     private void Awake()
     {
