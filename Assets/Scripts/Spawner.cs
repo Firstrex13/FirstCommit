@@ -1,40 +1,73 @@
-using Unity.VisualScripting;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private HandlerOfActions _handlerOfActions;
-    [SerializeField] private GameObject _cubePrefab;
     [SerializeField] private Cube _cube;
 
-    private float _spawnRadius = 3f;
-    private int _minCubesCount = 2;
-    private int _maxCubesCount = 6;
-    private int _numberToDecreaseScale = 2;
+    private float _repeatRate = 1f;
+    private int _poolCpacity = 10;
+    private int _maxSize = 10;
 
-    public void CreateCubes(Cube cube)
+    private ObjectPool<Cube> _pool;
+
+    private void Awake()
     {
+        _pool = new ObjectPool<Cube>(
+            createFunc: () => Instantiate(_cube),
+            actionOnGet: (cube) => ActionOnGet(cube),
+            actionOnRelease: (cube) => OnReleaseCube(cube),
+            actionOnDestroy: (cube) => Destroy(cube),
+            collectionCheck: true,
+            defaultCapacity: _poolCpacity,
+            maxSize: _maxSize
+            );
+    }      
 
-        int currentCubCount = Random.Range(_minCubesCount, _maxCubesCount + 1);
+    private void Start()
+    {
+        StartCoroutine(CreateCube(_repeatRate));
+    }
 
-        for (int i = 0; i < currentCubCount; i++)
+    private IEnumerator CreateCube(float delay)
+    {
+        while (enabled)
         {
-            GameObject newCube = Instantiate(_cubePrefab, transform.position, Quaternion.identity);
-
-            Vector3 position = cube.transform.position;
-
-            Vector3 currentScale = cube.transform.localScale;
-
-            newCube.transform.position = position + Random.insideUnitSphere * _spawnRadius;
-
-            newCube.transform.localScale = currentScale / _numberToDecreaseScale;
-
-            if (_cube != null)
-            {
-                _cube.GetComponent<Cube>();
-
-                _cube.Initialise(newCube.transform);
-            }
+            yield return new WaitForSeconds(delay);
+            GetCube();
         }
+    }
+
+    private void ActionOnGet(Cube cube)
+    {
+        cube.CubeDeleted += OnCubeDeleted;
+        TakePosition(cube);
+        cube.gameObject.SetActive(true);
+    }
+
+    private void TakePosition(Cube cube)
+    {
+        int maxPosition = 8;
+        int height = 13;
+        Vector3 SpawnArea = new Vector3(Random.Range(-maxPosition, maxPosition), height, Random.Range(-maxPosition, maxPosition));
+
+        cube.transform.position = SpawnArea;
+    }
+
+    private void GetCube()
+    {
+        _pool.Get();
+    }
+
+    private void OnCubeDeleted(Cube cube)
+    {
+        cube.CubeDeleted -= OnCubeDeleted;
+        _pool.Release(cube);
+    }
+
+    private void OnReleaseCube(Cube cube)
+    {
+        cube.gameObject.SetActive(false);  
     }
 }

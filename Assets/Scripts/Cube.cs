@@ -1,42 +1,60 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Cube : MonoBehaviour
 {
-    [SerializeField] private float _explosionRadius = 10f;
-    [SerializeField] private float _explosionForce = 100f;
-    [SerializeField] private float _splitChance = 1f;
+    private int _delay;
+    private int _minRange = 2;
+    private int _maxRange = 6;
+    private bool _isTouched = false;
 
     private Rigidbody _rigidBody;
+
+    public event Action<Cube> CubeDeleted;
 
     private void Awake()
     {
         _rigidBody = GetComponent<Rigidbody>();
-        GetComponent<Renderer>().material.color = Random.ColorHSV();
     }
 
-    public void Initialise(Transform cubeScalse)
+    private void Start()
     {
-        transform.localScale = cubeScalse.localScale;
+        _delay = UnityEngine.Random.Range(_minRange, _maxRange);
     }
 
-    public float GetChance()
+    private void ClearVelocity()
     {
-        return _splitChance;
+        _rigidBody.linearVelocity = Vector3.zero;
+        _rigidBody.angularVelocity = Vector3.zero;
     }
 
-    public void Destroy()
+    private void OnCollisionEnter(Collision collision)
     {
-        Destroy(gameObject);
+        if (collision.gameObject.TryGetComponent(out Platform platform))
+        {
+            if (_isTouched)
+            {
+                return;
+            }
+
+            _isTouched = true;
+
+            StartCoroutine(DeleteWithDelay(_delay));
+            SetColor();
+        }
     }
 
-    public void AddExplosionForce()
+    private IEnumerator DeleteWithDelay(int delay)
     {
-        _rigidBody.AddExplosionForce(_explosionForce, transform.position, _explosionRadius);
+        yield return new WaitForSeconds(delay);
+        ClearVelocity();
+        CubeDeleted?.Invoke(this);
     }
 
-    public float GetScale(GameObject newCube)
+    private void SetColor()
     {
-        return newCube.transform.localScale.x;
+        GetComponent<Renderer>().material.color = new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value, 1);
     }
 }
